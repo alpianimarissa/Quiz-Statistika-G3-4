@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Kuis Sertifikasi Misi Data Angkasa 2.0</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root {
+  --bg: #090c24;
+  --panel: #ffffff;
+  --navy: #0f133a;
+  --navy-light: #1c2265;
+  --indigo: #3f51b5;
+  --cyan: #00bcd4;
+  --cyan-dark: #0097a7;
+  --amber: #ffb300;
+  --amber-dark: #ff8f00;
+  --coral: #ff5722;
+  --coral-dark: #e64a19;
+  --mint: #2e7d32;
+  --mint-dark: #1b5e20;
+  --violet: #7e57c2;
+  --violet-dark: #5e35b1;
+  --ink: #1c2042;
+  --ink-soft: #5c6294;
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
+  --shadow-soft: 0 12px 35px rgba(14,18,54,0.12);
+  --shadow-pop: 0 16px 36px rgba(14,18,54,0.25);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100vh; font-family: 'Nunito', sans-serif; background-color: var(--bg); color: var(--ink); display: flex; align-items: center; justify-content: center; }
+
+body {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(255,255,255,0.08) 0, transparent 3%),
+    radial-gradient(circle at 85% 85%, rgba(255,255,255,0.06) 0, transparent 3%),
+    radial-gradient(ellipse at 50% 50%, #171c4d 0%, #090b24 75%, #030411 100%);
+  padding: 12px;
+  overflow-x: hidden;
+}
+
+/* Background Stars */
+.stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 4s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { opacity: .2; } 50% { opacity: .9; } }
+
+#app-container {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 960px;
+  background: linear-gradient(180deg, #1d2566, #0e1236);
+  border-radius: 36px;
+  padding: 10px;
+  box-shadow: 0 35px 80px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+#screen {
+  background: #f4f6fc;
+  border-radius: 26px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 680px;
+  max-height: 840px;
+  box-shadow: inset 0 3px 12px rgba(0,0,0,0.1);
+}
+
+/* Topbar */
+#topbar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 22px;
+  background: linear-gradient(180deg, #161c52, #0e1236);
+  color: #fff;
+  flex-shrink: 0;
+}
+#topbar .mission-title {
+  font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 16px; flex: 1;
+}
+#topbar .mission-title small {
+  display: block; font-family: 'Nunito', sans-serif; font-weight: 600;
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--cyan);
+}
+#page-counter { font-size: 13px; color: #a4adfa; font-weight: 700; }
+
+/* Progress bar rocket */
+#progress-track {
+  height: 6px; background: rgba(255,255,255,0.15); position: relative; flex-shrink: 0;
+}
+#progress-bar {
+  height: 100%; width: 0%; background: linear-gradient(90deg, var(--cyan), var(--amber));
+  transition: width 0.4s ease;
+}
+#progress-rocket {
+  position: absolute; top: -14px; left: 0%; transform: translateX(-50%);
+  transition: left 0.4s ease; font-size: 18px; z-index: 2;
+}
+
+#stage {
+  flex: 1; overflow-y: auto; padding: 22px 28px; scroll-behavior: smooth;
+}
+#stage::-webkit-scrollbar { width: 8px; }
+#stage::-webkit-scrollbar-thumb { background: #b8c1ec; border-radius: 8px; }
+
+/* Animation page translation */
+.fade-in { animation: slideIn 0.4s ease both; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Cards & Layout */
+.card {
+  background: #ffffff; border-radius: var(--radius-md); padding: 18px 22px;
+  box-shadow: var(--shadow-soft); margin-bottom: 16px;
+}
+.card.tinted-cyan { background: #e0f7fa; border: 2px solid #b2ebf2; }
+.card.tinted-amber { background: #fff8e1; border: 2px solid #ffe082; }
+.card.tinted-violet { background: #f3e5f5; border: 2px solid #e1bee7; }
+
+h1.page-title {
+  font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 26px;
+  margin: 0 0 10px; line-height: 1.25; color: var(--navy); text-align: center;
+}
+p.lead { font-size: 15.5px; color: var(--ink-soft); margin: 0 0 16px; line-height: 1.6; text-align: center; }
+
+/* SVGs Illustrations sizing */
+.illus-wrap { display: flex; justify-content: center; margin: 12px 0; width: 100%; }
+.illus-wrap.pie-wrap svg { max-width: 200px; width: 100%; height: auto; }
+.illus-wrap.bar-wrap svg { max-width: 440px; width: 100%; height: auto; }
+.illus-wrap.pic-wrap svg { max-width: 460px; width: 100%; height: auto; }
+
+/* Options lists */
+.quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+@media (max-width: 600px) { .quiz-options { grid-template-columns: 1fr; } }
+
+.quiz-option {
+  text-align: left; background: #fff; border: 2px solid #e2e8f0; border-radius: var(--radius-sm);
+  padding: 14px 16px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 15px;
+  cursor: pointer; color: var(--ink); transition: all .15s ease; display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+.quiz-option:hover { border-color: var(--cyan); transform: translateY(-2px); }
+.quiz-option .letter {
+  width: 28px; height: 28px; border-radius: 50%; background: #e1e7f8; color: var(--indigo);
+  display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0;
+}
+.quiz-option.correct { background: #e8f5e9; border-color: var(--mint); color: #1b5e20; }
+.quiz-option.correct .letter { background: var(--mint); color: #fff; }
+.quiz-option.wrong { background: #ffebee; border-color: var(--coral); color: #b71c1c; }
+.quiz-option.wrong .letter { background: var(--coral); color: #fff; }
+.quiz-option[disabled] { cursor: default; transform: none; }
+
+/* Mascot Talk Box */
+.orbit-say {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: #fff; border-radius: var(--radius-md);
+  padding: 16px; box-shadow: var(--shadow-soft); margin-top: 16px;
+  border-left: 5px solid var(--cyan); animation: pop .3s ease;
+}
+.orbit-say .bubble { font-size: 14.5px; line-height: 1.6; }
+.orbit-say .bubble b { color: #1a237e; }
+.orbit-avatar { flex-shrink: 0; width: 52px; height: 52px; }
+
+/* Buttons */
+.btn {
+  font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 15px;
+  border: none; border-radius: 100px; padding: 12px 28px; cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease; box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+}
+.btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.15); }
+.btn-primary { background: var(--coral); color: #fff; box-shadow: 0 6px 0 var(--coral-dark); }
+.btn-mint { background: var(--mint); color: #fff; box-shadow: 0 6px 0 var(--mint-dark); }
+.btn-cyan { background: var(--cyan); color: #fff; box-shadow: 0 6px 0 var(--cyan-dark); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+
+#nav-row {
+  display: flex; justify-content: space-between; align-items: center; margin-top: 16px;
+}
+
+/* Formula blocks */
+.calc-box {
+  background: #f5f7ff; border-radius: var(--radius-sm); padding: 14px; margin: 12px 0;
+  text-align: center; font-size: 15px; border-left: 5px solid #303f9f;
+}
+
+/* Score Summary / Lencana */
+.summary-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: center; }
+@media (max-width: 640px) { .summary-grid { grid-template-columns: 1fr; } }
+
+/* Star Lencana */
+.badge-holder { text-align: center; position: relative; }
+.badge-holder svg { max-width: 160px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15)); }
+
+/* Certification Box */
+#cert-card {
+  border: 10px double var(--amber); background: #fdfcf7; color: #2c2514;
+  padding: 30px; text-align: center; font-family: 'Georgia', serif; position: relative;
+  border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+#cert-card h2 { font-family: 'Baloo 2', sans-serif; font-size: 28px; color: var(--navy); margin: 0 0 10px; }
+#cert-card .name { font-size: 24px; font-weight: 800; border-bottom: 2px dashed #8a7344; display: inline-block; padding: 0 15px 4px; color: var(--coral-dark); font-family: 'Nunito', sans-serif; }
+#cert-card .award { font-size: 14px; font-style: italic; color: #555; margin: 15px 0; }
+#cert-card .score { font-family: 'Baloo 2', sans-serif; font-size: 18px; font-weight: 700; color: var(--mint-dark); margin-top: 15px; }
+
+/* Input Screen */
+.input-field {
+  width: 100%; max-width: 320px; padding: 12px 18px; border-radius: 100px;
+  border: 2px solid #cbd5e1; font-size: 16px; font-family: 'Nunito', sans-serif;
+  text-align: center; font-weight: 700; margin-bottom: 16px; outline: none;
+}
+.input-field:focus { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0,188,212,0.2); }
+
+@keyframes pop { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Review items list */
+.review-item {
+  border-bottom: 1px solid #e2e8f0; padding: 16px 0;
+}
+.review-item:last-child { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div id="app-container">
+  <div id="screen">
+    <!-- Topbar & Progress -->
+    <div id="topbar" style="display:none;">
+      <div class="mission-title">
+        <small>Misi Data Angkasa 2.0</small>
+        <span>Sertifikasi Ahli Statistika</span>
+      </div>
+      <div id="page-counter">Soal 1 / 30</div>
+    </div>
+    <div id="progress-track" style="display:none;">
+      <div id="progress-bar"></div>
+      <div id="progress-rocket">🚀</div>
+    </div>
+
+    <!-- Main Stage Content -->
+    <div id="stage">
+      <!-- Loading / Welcome screen will load dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- SVG Defs -->
+<svg width="0" height="0" style="position:absolute">
+<defs>
+<linearGradient id="g-cyan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4dd0e1"/><stop offset="1" stop-color="#0097a7"/></linearGradient>
+<linearGradient id="g-coral" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a65"/><stop offset="1" stop-color="#e64a19"/></linearGradient>
+<linearGradient id="g-amber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd54f"/><stop offset="1" stop-color="#ff8f00"/></linearGradient>
+<linearGradient id="g-mint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#81c784"/><stop offset="1" stop-color="#2e7d32"/></linearGradient>
+<linearGradient id="g-violet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b0bec5"/><stop offset="1" stop-color="#78909c"/></linearGradient>
+<radialGradient id="g-planet" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#b2ebf2"/><stop offset="55%" stop-color="#00bcd4"/><stop offset="100%" stop-color="#006064"/></radialGradient>
+<radialGradient id="g-robothead" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#ffffff"/><stop offset="60%" stop-color="#e8eaf6"/><stop offset="100%" stop-color="#c5cae9"/></radialGradient>
+<symbol id="icon-star" viewBox="0 0 24 24">
+  <path d="M12 2 L14.8 8.5 L21.8 9.1 L16.5 13.8 L18.2 20.8 L12 17 L5.8 20.8 L7.5 13.8 L2.2 9.1 L9.2 8.5 Z" fill="url(#g-amber)" stroke="#b77f00" stroke-width="0.7" stroke-linejoin="round"/>
+</symbol>
+<symbol id="icon-alien" viewBox="0 0 24 24">
+  <ellipse cx="12" cy="11" rx="8" ry="6" fill="url(#g-cyan)" stroke="#00838f" stroke-width="1"/>
+  <circle cx="9" cy="10" r="1.8" fill="#000"/>
+  <circle cx="15" cy="10" r="1.8" fill="#000"/>
+  <path d="M9 14 Q12 16 15 14" stroke="#000" stroke-width="1.2" fill="none"/>
+</symbol>
+<symbol id="icon-apple" viewBox="0 0 24 24">
+  <path d="M12 9c-3.5 0-5.5 2.6-5.5 6 0 3.6 2.3 7 4.4 7 1 0 1.3-.5 2.1-.5s1.1.5 2.1.5c1.9 0 4.4-3.2 4.4-6.6 0-3.6-2.3-6.4-5.4-6.4-.7 0-1.3.2-2.1.6-.8-.4-1.4-.6-2-.6z" fill="url(#g-coral)" stroke="#b8352a" stroke-width="0.5"/>
+  <path d="M12.3 8.6c0-1.4.8-2.6 2-3.1-.2 1.5-1 2.7-2 3.1z" fill="#2e7d32"/>
+</symbol>
+<symbol id="icon-book" viewBox="0 0 24 24">
+  <rect x="4" y="4.5" width="16" height="15" rx="1.6" fill="url(#g-violet)" stroke="#4c2fb8" stroke-width="0.5"/>
+  <line x1="12" y1="4.5" x2="12" y2="19.5" stroke="#4c2fb8" stroke-width="0.8"/>
+</symbol>
+</defs>
+</svg>
+
+<script>
+// Twinkling stars generator
+(function(){
+  const c = document.getElementById('stars');
+  let html = '';
+  for(let i=0; i<60; i++){
+    const s = Math.random()*2+0.5;
+    html += `<div class="star" style="left:${Math.random()*100}%; top:${Math.random()*100}%; width:${s}px; height:${s}px; animation-delay:${Math.random()*3}s;"></div>`;
+  }
+  c.innerHTML = html;
+})();
+
+// Web Audio API Synthesizer (Zero asset sound effects)
+let audioCtx = null;
+function playSound(type) {
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    if (type === 'correct') {
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.35);
+    } else if (type === 'wrong') {
+      osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+      osc.frequency.setValueAtTime(147, audioCtx.currentTime + 0.15); // D3
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.4);
+    } else if (type === 'click') {
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.08);
+    } else if (type === 'cheer') {
+      // Arpeggio chord
+      const freqs = [261.63, 329.63, 392.00, 523.25];
+      freqs.forEach((f, index) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.frequency.setValueAtTime(f, audioCtx.currentTime + index * 0.1);
+        g.gain.setValueAtTime(0.06, audioCtx.currentTime + index * 0.1);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + index * 0.1 + 0.4);
+        o.start();
+        o.stop(audioCtx.currentTime + index * 0.1 + 0.4);
+      });
+    }
+  } catch (e) {
+    console.warn("Audio Context blocked or unsupported:", e);
+  }
+}
+
+// Vector math helper functions
+function polarToCartesian(cx, cy, r, angleDeg){
+  const a = (angleDeg-90) * Math.PI/180;
+  return { x: cx + r*Math.cos(a), y: cy + r*Math.sin(a) };
+}
+
+function arcPath(cx, cy, r, startAngle, endAngle){
+  if(endAngle - startAngle >= 359.99){ endAngle = startAngle + 359.99; }
+  const start = polarToCartesian(cx, cy, r, startAngle);
+  const end = polarToCartesian(cx, cy, r, endAngle);
+  const largeArc = (endAngle-startAngle) > 180 ? 1 : 0;
+  return `M ${cx} ${cy} L ${start.x.toFixed(2)} ${start.y.toFixed(2)} A ${r} ${r} 0 ${largeArc} 1 ${end.x.toFixed(2)} ${end.y.toFixed(2)} Z`;
+}
+
+// Orbit Robot SVG
+function renderOrbit(pose) {
+  pose = pose || 'wave';
+  const armR = pose==='wave' ? `<line x1="38" y1="30" x2="49" y2="16" stroke="#9fa8da" stroke-width="4" stroke-linecap="round"/><circle cx="49" cy="16" r="4" fill="#ffb300"/>`
+             : pose==='point' ? `<line x1="38" y1="30" x2="50" y2="30" stroke="#9fa8da" stroke-width="4" stroke-linecap="round"/><circle cx="50" cy="30" r="4" fill="#ffb300"/>`
+             : `<line x1="38" y1="30" x2="45" y2="40" stroke="#9fa8da" stroke-width="4" stroke-linecap="round"/><circle cx="45" cy="40" r="4" fill="#ffb300"/>`;
+  return `<svg class="orbit-avatar" viewBox="0 0 60 60">
+    <ellipse cx="30" cy="55" rx="14" ry="3" fill="rgba(14,18,54,0.18)"/>
+    <rect x="18" y="30" width="24" height="20" rx="7" fill="url(#g-cyan)" stroke="#00838f" stroke-width="1"/>
+    <circle cx="30" cy="18" r="14" fill="url(#g-robothead)" stroke="#c5cae9" stroke-width="1"/>
+    <circle cx="25" cy="17" r="2.6" fill="#1a237e"/>
+    <circle cx="35" cy="17" r="2.6" fill="#1a237e"/>
+    <path d="M25 23 Q30 26 35 23" stroke="#1a237e" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <rect x="27" y="2" width="6" height="6" rx="2" fill="#ff5722"/>
+    ${armR}
+    <line x1="22" y1="30" x2="14" y2="40" stroke="#9fa8da" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="14" cy="40" r="4" fill="#ffb300"/>
+  </svg>`;
+}
+
+// 3D Bar Chart SVG Generator
+function generateBarChart(data, max, unit) {
+  const w = 480, h = 220;
+  const padL=46, padB=34, padT=22, padR=20, depth=8;
+  const plotW = w-padL-padR, plotH = h-padT-padB;
+  const bw = plotW/data.length*0.50;
+  const gap = plotW/data.length;
+  const colors = ['g-cyan','g-coral','g-amber','g-mint','g-violet'];
+  
+  let bars='', labels='', grid='';
+  for(let i=0; i<=4; i++){
+    const valLabel = Math.round(max*i/4);
+    const y = padT + plotH - (plotH*i/4);
+    grid += `<line x1="${padL}" y1="${y}" x2="${w-padR}" y2="${y}" stroke="#e2e8f0" stroke-width="1"/>
+             <text x="${padL-8}" y="${y+4}" text-anchor="end" font-family="Nunito" font-weight="700" font-size="10.5" fill="#5c6294">${valLabel}</text>`;
+  }
+  
+  data.forEach((d, i)=>{
+    const x = padL + gap*i + (gap-bw)/2;
+    const bh = (d.value/max)*plotH;
+    const y0 = padT+plotH;
+    const y = y0-bh;
+    const col = `url(#${colors[i%colors.length]})`;
+    bars += `
+      <g>
+        <path d="M${x} ${y} L${x+bw} ${y} L${x+bw+depth} ${y-depth} L${x+depth} ${y-depth} Z" fill="rgba(255,255,255,0.4)"/>
+        <path d="M${x+bw} ${y} L${x+bw+depth} ${y-depth} L${x+bw+depth} ${y0-depth} L${x+bw} ${y0} Z" fill="rgba(14,18,54,0.15)"/>
+        <rect x="${x}" y="${y}" width="${bw}" height="${bh}" fill="${col}" rx="4"/>
+        <text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="12" fill="#0e1236">${d.value}${unit||''}</text>
+      </g>`;
+    labels += `<text x="${x+bw/2}" y="${h-10}" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="11.5" fill="#1c2042">${d.label}</text>`;
+  });
+  
+  return `<div class="illus-wrap bar-wrap"><svg viewBox="0 0 ${w} ${h}" width="100%">${grid}
+    <line x1="${padL}" y1="${padT+plotH}" x2="${w-padR}" y2="${padT+plotH}" stroke="#94a3b8" stroke-width="2"/>
+    ${bars}
+    ${labels}
+  </svg></div>`;
+}
+
+// Pictogram SVG Generator
+function generatePictogram(data, icon, unitPerIcon) {
+  const w = 520;
+  const rowH = 46, iconSize=24, gap=6, labelW=130;
+  let rows = '';
+  
+  data.forEach((d, i)=>{
+    const full = Math.floor(d.value/unitPerIcon);
+    const rem = (d.value/unitPerIcon) - full;
+    let icons = '';
+    let cx = labelW;
+    
+    for(let k=0; k<full; k++){
+      icons += `<use href="#${icon}" x="${cx}" y="${i*rowH+8}" width="${iconSize}" height="${iconSize}"/>`;
+      cx += iconSize+gap;
+    }
+    
+    if(rem > 0){
+      icons += `
+      <g style="opacity:0.25;">
+        <use href="#${icon}" x="${cx}" y="${i*rowH+8}" width="${iconSize}" height="${iconSize}"/>
+      </g>
+      <svg x="${cx}" y="${i*rowH+8}" width="${iconSize*rem}" height="${iconSize}" viewBox="0 0 ${iconSize} ${iconSize}" preserveAspectRatio="xMinYMin slice" overflow="hidden">
+        <use href="#${icon}" x="0" y="0" width="${iconSize}" height="${iconSize}"/>
+      </svg>`;
+    }
+    rows += `<text x="10" y="${i*rowH+26}" font-family="Nunito" font-weight="800" font-size="13.5" fill="#1c2042">${d.label}</text>
+      ${icons}`;
+  });
+  const h = data.length*rowH+10;
+  return `<div class="illus-wrap pic-wrap"><svg viewBox="0 0 ${w} ${h}" width="100%">${rows}</svg></div>`;
+}
+
+// Pie Chart SVG Generator
+function generatePieChart(segs, showDegrees) {
+  const size = 250;
+  const cx = size/2, cy = size/2, r = size*0.35;
+  let angle = 0;
+  let paths = '', labels = '';
+  const outerR = r * 1.25;
+  
+  segs.forEach((s) => {
+    const sweep = (s.percent / 100) * 360;
+    const isMissing = !!s.missing;
+    const fill = isMissing ? '#cbd5e1' : `url(#${s.color})`;
+    const stroke = '#ffffff';
+    const dash = isMissing ? 'stroke-dasharray="4,3"' : '';
+    
+    paths += `<path d="${arcPath(cx, cy, r, angle, angle+sweep)}" fill="${fill}" stroke="${stroke}" stroke-width="2.5" ${dash} />`;
+    
+    const mid = angle + sweep/2;
+    const lp = polarToCartesian(cx, cy, outerR, mid);
+    
+    let txt = '';
+    if (isMissing) {
+      txt = '?';
+    } else if (showDegrees) {
+      txt = Math.round((s.percent/100)*360) + '°';
+    } else if (s.fractionLabel) {
+      txt = s.fractionLabel;
+    } else {
+      txt = s.percent + '%';
+    }
+    
+    labels += `<text x="${lp.x}" y="${lp.y+4}" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="13" fill="${isMissing?'#5c6294':'#0e1236'}">${txt}</text>`;
+    angle += sweep;
+  });
+  
+  return `<div class="illus-wrap pie-wrap"><svg viewBox="0 0 ${size} ${size+12}" width="100%">
+    <ellipse cx="${cx}" cy="${cy+r+10}" rx="${r*0.9}" ry="6" fill="rgba(14,18,54,0.08)"/>
+    ${paths}
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+    ${labels}
+  </svg></div>`;
+}
+
+// --- SOAL DATABASE (30 Items) ---
+const QUESTIONS = [
+  {
+    type: 'bar',
+    data: [ {label: 'Mars', value: 15}, {label: 'Venus', value: 25}, {label: 'Bumi', value: 10} ],
+    max: 30,
+    unit: '',
+    question: "Tarik garis pandang dari puncak kargo Venus ke sumbu di sebelah kiri. Berapakah jumlah robot penjelajah yang ada di Venus?",
+    options: ["10 robot", "15 robot", "20 robot", "25 robot"],
+    correct: 3,
+    hint: "Lihat puncak batang Venus berwarna oranye dan geser matamu ke garis vertikal di sebelah kiri.",
+    explanation: "Batang Venus berwarna oranye berhenti tepat sejajar dengan garis berlabel angka $25$. Jadi, Venus mengangkut $25$ kargo robot penjelajah."
+  },
+  {
+    type: 'bar',
+    data: [ {label: 'Sektor Alpha', value: 30}, {label: 'Sektor Beta', value: 45}, {label: 'Sektor Gamma', value: 20} ],
+    max: 50,
+    unit: '',
+    question: "Perhatikan skala lompat di sebelah kiri. Puncak batang Sektor Beta berhenti tepat di tengah-tengah antara angka 40 dan 50. Berapakah nilainya?",
+    options: ["40 unit", "42 unit", "45 unit", "50 unit"],
+    correct: 2,
+    hint: "Angka berapa yang berada tepat di tengah-tengah rentang bilangan dari 40 sampai 50?",
+    explanation: "Selisih skala utama adalah $10$ unit ($50 - 40 = 10$). Nilai tengah di antara $40$ dan $50$ dihitung sebagai: $40 + (10 \\div 2) = 45$ unit."
+  },
+  {
+    type: 'bar',
+    data: [ {label: 'Asteroid X', value: 40}, {label: 'Asteroid Y', value: 15} ],
+    max: 50,
+    unit: ' ton',
+    question: "Berapakah selisih jumlah muatan mineral tambang yang diambil dari Asteroid X dengan Asteroid Y?",
+    options: ["15 ton", "20 ton", "25 ton", "30 ton"],
+    correct: 2,
+    hint: "Selisih didapatkan dengan mengurangkan nilai kargo yang lebih besar dengan kargo yang lebih kecil.",
+    explanation: "Mineral Asteroid X = $40$ ton. Mineral Asteroid Y = $15$ ton.\n$$\\text{Selisih} = 40 - 15 = 25 \\text{ ton}.$$"
+  },
+  {
+    type: 'bar',
+    data: [ {label: 'Stasiun A', value: 10}, {label: 'Stasiun B', value: 20}, {label: 'Stasiun C', value: 15} ],
+    max: 25,
+    unit: ' boks',
+    question: "Berapakah total seluruh kargo pasokan energi gabungan dari ketiga stasiun luar angkasa tersebut?",
+    options: ["35 boks", "40 boks", "45 boks", "50 boks"],
+    correct: 2,
+    hint: "Total dicari dengan menjumlahkan seluruh nilai pada setiap batang yang berdiri.",
+    explanation: "Suku-suku datanya adalah: Stasiun A ($10$), Stasiun B ($20$), dan Stasiun C ($15$).\n$$\\text{Total} = 10 + 20 + 15 = 45 \\text{ boks}.$$"
+  },
+  {
+    type: 'bar',
+    data: [ {label: 'Rover A', value: 18}, {label: 'Rover B', value: 30}, {label: 'Rover C', value: 12} ],
+    max: 40,
+    unit: ' unit',
+    question: "Rover mana yang mengangkut jumlah kargo paling sedikit, dan berapa banyak kargo yang ia bawa?",
+    options: ["Rover C (12 unit)", "Rover A (18 unit)", "Rover B (30 unit)", "Rover C (15 unit)"],
+    correct: 0,
+    hint: "Cari batang yang paling pendek, lalu baca nilainya di sumbu kiri.",
+    explanation: "Batang paling pendek adalah milik Rover C dengan tinggi batang menunjukkan nilai $12$ unit kargo."
+  },
+  {
+    type: 'bar',
+    data: [ {label: 'Satelit P', value: 60}, {label: 'Satelit Q', value: 100} ],
+    max: 120,
+    unit: ' boks',
+    question: "Agar jumlah kargo cadangan di Satelit P menyamai banyak kargo Satelit Q, berapa kargo lagi yang harus ditambahkan ke Satelit P?",
+    options: ["30 boks", "40 boks", "50 boks", "60 boks"],
+    correct: 1,
+    hint: "Kurangi nilai target Satelit Q dengan nilai yang sudah dimiliki Satelit P saat ini.",
+    explanation: "Nilai Satelit Q = $100$, Nilai Satelit P = $60$.\n$$\\text{Tambahan} = 100 - 60 = 40 \\text{ boks}.$$"
+  },
+  {
+    type: 'bar',
+    data: [ {label: 'Tim Merah', value: 25}, {label: 'Tim Biru', value: 35} ],
+    max: 40,
+    unit: ' mineral',
+    question: "Jika kargo mineral kedua tim digabungkan terlebih dahulu, lalu dibagi rata secara adil ke kedua tim, berapa banyak mineral yang diterima masing-masing tim?",
+    options: ["25 mineral", "30 mineral", "35 mineral", "40 mineral"],
+    correct: 1,
+    hint: "Jumlahkan dulu kargo kedua tim (25 + 35) lalu bagi dua.",
+    explanation: "Total mineral = $25 + 35 = 60$ mineral. Dibagi rata untuk $2$ tim:\n$$\\text{Bagian rata} = 60 \\div 2 = 30 \\text{ mineral}.$$"
+  },
+  {
+    type: 'bar',
+    data: [ {label: 'Jalur A', value: 8}, {label: 'Jalur B', value: 16}, {label: 'Jalur C', value: 24} ],
+    max: 30,
+    unit: ' modul',
+    question: "Berapa kalikah jumlah modul kargo di Jalur C jika dibandingkan dengan Jalur A?",
+    options: ["2 kali lipat", "3 kali lipat", "4 kali lipat", "5 kali lipat"],
+    correct: 1,
+    hint: "Bagi nilai kargo Jalur C dengan nilai kargo Jalur A.",
+    explanation: "Kargo Jalur C = $24$, Kargo Jalur A = $8$.\n$$\\text{Perbandingan} = 24 \\div 8 = 3 \\text{ kali lipat}.$$"
+  },
+  {
+    type: 'pic',
+    data: [ {label: 'Tim Alpha', value: 6}, {label: 'Tim Beta', value: 10} ],
+    icon: 'icon-star',
+    unitPerIcon: 2,
+    question: "Kunci: 1 ⭐ = 2 kargo. Pada baris Tim Beta, terdapat 5 buah bintang penuh. Berapakah jumlah kargo Tim Beta sebenarnya?",
+    options: ["5 kargo", "8 kargo", "10 kargo", "12 kargo"],
+    correct: 2,
+    hint: "Kalikan jumlah simbol bintang pada Tim Beta dengan nilai per kunci bintang di keterangannya.",
+    explanation: "Tim Beta memiliki $5$ bintang penuh. Setiap bintang bernilai $2$.\n$$\\text{Total} = 5 \\times 2 = 10 \\text{ kargo}.$$"
+  },
+  {
+    type: 'pic',
+    data: [ {label: 'Modul A', value: 15}, {label: 'Modul B', value: 30} ],
+    icon: 'icon-alien',
+    unitPerIcon: 5,
+    question: "Kunci: 1 👽 = 5 sel energi. Berapa banyakkah sel energi cadangan yang dikumpulkan oleh Modul A?",
+    options: ["3 sel energi", "10 sel energi", "15 sel energi", "20 sel energi"],
+    correct: 2,
+    hint: "Hitung jumlah simbol alien pada Modul A lalu kalikan dengan 5.",
+    explanation: "Modul A memiliki $3$ simbol alien. Setiap alien melambangkan $5$ sel energi.\n$$\\text{Energi} = 3 \\times 5 = 15 \\text{ sel energi}.$$"
+  },
+
+  {
+    type: 'pic',
+    data: [ {label: 'Gudang A', value: 12}, {label: 'Gudang B', value: 18} ],
+    icon: 'icon-star',
+    unitPerIcon: 4,
+    question: "Kunci: 1 ⭐ = 4 boks makanan. Gudang B memiliki 4 bintang penuh dan 1 bintang setengah (½). Berapakah jumlah boks makanan di Gudang B?",
+    options: ["16 boks", "18 boks", "20 boks", "22 boks"],
+    correct: 1,
+    hint: "1 bintang penuh = 4 boks. Maka, bintang setengah nilainya adalah setengah dari 4 = 2 boks.",
+    explanation: "$4$ Bintang penuh = $4 \\times 4 = 16$ boks. $1$ Bintang setengah = $4 \\div 2 = 2$ boks.\n$$\\text{Total} = 16 + 2 = 18 \\text{ boks}.$$"
+  },
+  {
+    type: 'pic',
+    data: [ {label: 'Camilan Cokelat', value: 35}, {label: 'Camilan Keju', value: 25} ],
+    icon: 'icon-apple',
+    unitPerIcon: 10,
+    question: "Kunci: 1 🍎 = 10 boks camilan. Camilan Keju memiliki 2 apel penuh dan 1 apel setengah (½). Berapa banyak boks Camilan Keju?",
+    options: ["20 boks", "25 boks", "30 boks", "35 boks"],
+    correct: 1,
+    hint: "Hitung nilai apel penuh terlebih dahulu, lalu tambahkan nilai setengah apel (setengah dari 10).",
+    explanation: "$2$ Apel penuh = $2 \\times 10 = 20$ boks. $1$ Apel setengah = $10 \\div 2 = 5$ boks.\n$$\\text{Total} = 20 + 5 = 25 \\text{ boks}.$$"
+  },
+  {
+    type: 'pic',
+    data: [ {label: 'Stasiun X', value: 16}, {label: 'Stasiun Y', value: 8} ],
+    icon: 'icon-book',
+    unitPerIcon: 4,
+    question: "Kunci: 1 📘 = 4 boks modul kargo. Berapakah selisih boks kargo yang nyata antara Stasiun X (4 buku) dengan Stasiun Y (2 buku)?",
+    options: ["4 boks kargo", "8 boks kargo", "12 boks kargo", "16 boks kargo"],
+    correct: 1,
+    hint: "Cari nilai boks aslinya masing-masing stasiun dengan pengali 4, lalu kurangkan keduanya.",
+    explanation: "Stasiun X = $4 \\times 4 = 16$ boks. Stasiun Y = $2 \\times 4 = 8$ boks.\n$$\\text{Selisih} = 16 - 8 = 8 \\text{ boks kargo}.$$"
+  },
+  {
+    type: 'pic',
+    data: [ {label: 'Kru Tim 1', value: 6}, {label: 'Kru Tim 2', value: 9} ],
+    icon: 'icon-star',
+    unitPerIcon: 3,
+    question: "Kunci: 1 ⭐ = 3 astronot. Berapakah jumlah total kru penjelajah gabungan dari Kru Tim 1 dan Kru Tim 2?",
+    options: ["12 astronot", "15 astronot", "18 astronot", "21 astronot"],
+    correct: 1,
+    hint: "Kru Tim 1 memiliki 2 bintang, Kru Tim 2 memiliki 3 bintang. Gabungkan jumlah bintangnya dulu lalu kalikan 3.",
+    explanation: "Total bintang = $2 + 3 = 5$ bintang. Karena satu bintang mewakili $3$ astronot:\n$$\\text{Total} = 5 \\times 3 = 15 \\text{ astronot}.$$"
+  },
+  {
+    type: 'pic',
+    data: [ {label: 'Gudang Sinyal', value: 20} ],
+    icon: 'icon-star',
+    unitPerIcon: 5,
+    question: "Satelit mencatat Gudang Sinyal memiliki kargo asli sebanyak 20 unit dan digambarkan dengan 4 simbol bintang penuh. Berapakah nilai 1 simbol bintang pada kuncinya?",
+    options: ["2 unit kargo", "4 unit kargo", "5 unit kargo", "10 unit kargo"],
+    correct: 2,
+    hint: "Bagi jumlah kargo asli (20) dengan banyaknya simbol bintang yang menggambarkannya (4).",
+    explanation: "Total kargo asli = $20$, Jumlah simbol = $4$.\n$$\\text{Nilai kunci} = 20 \\div 4 = 5 \\text{ unit kargo per bintang}.$$"
+  },
+  {
+    type: 'pic',
+    data: [ {label: 'Sektor Merah', value: 14}, {label: 'Sektor Biru', value: 7} ],
+    icon: 'icon-alien',
+    unitPerIcon: 2,
+    question: "Kunci: 1 👽 = 2 roket. Sektor Biru memiliki 3 simbol alien penuh and 1 alien setengah (½). Berapakah banyak roket di Sektor Biru?",
+    options: ["5 roket", "6 roket", "7 roket", "8 roket"],
+    correct: 2,
+    hint: "3 alien penuh bernilai 3 x 2. Tambahkan setengah alien yang bernilai 1.",
+    explanation: "$3$ Alien penuh = $3 \\times 2 = 6$ roket. $1$ Alien setengah = $2 \\div 2 = 1$ roket.\n$$\\text{Total} = 6 + 1 = 7 \\text{ roket}.$$"
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Oksigen', percent: 60, color: 'g-cyan'}, {label: 'Nitrogen', percent: 40, color: 'g-coral'} ],
+    showDegrees: false,
+    question: "Dari diagram lingkaran persentase di atas, manakah juring sektor gas yang memiliki porsi juring terkecil?",
+    options: ["Oksigen", "Nitrogen", "Keduanya sama", "Tidak bisa ditentukan"],
+    correct: 1,
+    hint: "Bandingkan persentase angka atau luas juring pizza yang paling sempit.",
+    explanation: "Porsi Nitrogen ($40\\%$) lebih kecil dibandingkan dengan porsi Oksigen ($60\\%$). Maka juring terkecil adalah Nitrogen."
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Satelit', percent: 30, color: 'g-violet'}, {label: 'Asteroid', percent: 70, color: 'g-amber'} ],
+    showDegrees: false,
+    question: "Berapakah jumlah total seluruh persentase jika seluruh potongan juring dalam diagram lingkaran dijumlahkan?",
+    options: ["50%", "90%", "100%", "360%"],
+    correct: 2,
+    hint: "Ingat prinsip dasar persentase. Lingkaran utuh melambangkan semua data secara lengkap.",
+    explanation: "Dalam format persentase, sebuah lingkaran penuh mewakili seluruh data secara utuh, yang selalu setara dengan $100\\%$."
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Sektor A', percent: 50, color: 'g-cyan'}, {label: 'Sektor B', percent: 50, color: 'g-coral'} ],
+    showDegrees: true,
+    question: "Jika diukur menggunakan satuan sudut derajat, berapakah jumlah total sudut dari satu putaran lingkaran penuh?",
+    options: ["90°", "180°", "270°", "360°"],
+    correct: 3,
+    hint: "Sudut satu putaran penuh pada busur derajat atau lingkaran utuh selalu bernilai sama.",
+    explanation: "Satu putaran melingkar penuh dari titik awal kembali ke titik awal memiliki ukuran sudut tepat sebesar $360^{\\circ}$."
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Suhu Dingin', percent: 25, color: 'g-cyan'}, {label: 'Suhu Hangat', percent: 75, color: 'g-coral'} ],
+    showDegrees: false,
+    question: "Seperempat bagian dari juring pizza diagram lingkaran di atas setara dengan nilai berapa persen?",
+    options: ["10%", "25%", "50%", "100%"],
+    correct: 1,
+    hint: "Seperempat berarti lingkaran dibagi menjadi 4 bagian sama besar. Bagi 100% dengan 4.",
+    explanation: "Satu lingkaran penuh = $100\\%$.\n$$\\text{Seperempat bagian} = 100\\% \\div 4 = 25\\%.$$"
+  },
+
+  {
+    type: 'pie',
+    segments: [ {label: 'Siang', percent: 50, color: 'g-cyan'}, {label: 'Malam', percent: 50, color: 'g-violet'} ],
+    showDegrees: true,
+    question: "Setengah bagian lurus (juring separuh) dari diagram lingkaran sama dengan berapa derajat sudut putaran?",
+    options: ["90°", "180°", "270°", "360°"],
+    correct: 1,
+    hint: "Setengah dari lingkaran penuh derajat (setengah dari 360°).",
+    explanation: "Satu lingkaran penuh = $360^{\\circ}$. Maka juring setengah lingkaran (sudut lurus) bernilai:\n$$\\text{Setengah bagian} = 360^{\\circ} \\div 2 = 180^{\\circ}.$$"
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Bahan Bakar', percent: 45, color: 'g-coral'}, {label: 'Makanan', percent: 35, color: 'g-cyan'}, {label: 'Air', percent: 20, color: 'g-amber', missing: true} ],
+    showDegrees: false,
+    question: "Bahan Bakar = 45%, Makanan = 35%, dan bagian Air belum diketahui. Berapakah persen juring Air yang hilang tersebut?",
+    options: ["15%", "20%", "25%", "30%"],
+    correct: 1,
+    hint: "Kurangkan total 100% dengan jumlah persen bagian yang sudah diketahui (45% + 35%).",
+    explanation: "Jumlah juring yang diketahui = $45\\% + 35\\% = 80\\%$.\n$$\\text{Juring Air} = 100\\% - 80\\% = 20\\%.$$"
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Kargo A', percent: 33.3, color: 'g-cyan'}, {label: 'Kargo B', percent: 41.7, color: 'g-coral'}, {label: 'Kargo C', percent: 25, color: 'g-amber', missing: true} ],
+    showDegrees: true,
+    question: "Kargo A = 120°, Kargo B = 150°, sedangkan Kargo C belum diketahui. Berapakah besar derajat sudut juring Kargo C?",
+    options: ["80°", "90°", "100°", "110°"],
+    correct: 1,
+    hint: "Satu lingkaran derajat adalah 360°. Kurangkan 360° dengan jumlah sudut kargo A dan B.",
+    explanation: "Jumlah sudut yang diketahui = $120^{\\circ} + 150^{\\circ} = 270^{\\circ}$.\n$$\\text{Sudut Kargo C} = 360^{\\circ} - 270^{\\circ} = 90^{\\circ}.$$"
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Sektor Utara', percent: 50, color: 'g-cyan'}, {label: 'Sektor Selatan', percent: 50, color: 'g-coral'} ],
+    showDegrees: true,
+    question: "Jika sebuah sektor juring dalam diagram lingkaran bernilai tepat 50%, berapakah nilai sudut sektor tersebut dalam satuan derajat?",
+    options: ["90°", "120°", "180°", "360°"],
+    correct: 2,
+    hint: "50% berarti tepat setengah dari lingkaran penuh. Berapa derajat setengah dari 360°?",
+    explanation: "Sudut sektor dihitung dari pecahan persentase dikalikan dengan total sudut lingkaran penuh ($360^{\\circ}$):\n$$\\text{Sudut} = \\frac{50}{100} \\times 360^{\\circ} = \\frac{1}{2} \\times 360^{\\circ} = 180^{\\circ}.$$"
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Sektor Timur', percent: 25, color: 'g-cyan'}, {label: 'Sektor Barat', percent: 75, color: 'g-coral'} ],
+    showDegrees: true,
+    question: "Jika sebuah juring diagram lingkaran membentuk sudut siku-siku (90°), berapakah nilai persentase juring tersebut terhadap seluruh lingkaran?",
+    options: ["10%", "25%", "50%", "75%"],
+    correct: 1,
+    hint: "Sudut 90 derajat adalah seperempat dari lingkaran penuh. Berapa persentase dari seperempat bagian?",
+    explanation: "Rasio juring terhadap lingkaran dikalikan dengan $100\\%$:\n$$\\text{Persen} = \\frac{90^{\\circ}}{360^{\\circ}} \\times 100\\% = \\frac{1}{4} \\times 100\\% = 25\\%.$$"
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Tangki Merah', percent: 50, color: 'g-coral'}, {label: 'Tangki Biru', percent: 50, color: 'g-cyan'} ],
+    showDegrees: false,
+    question: "Sebuah diagram lingkaran menunjukkan pasokan air bersih. Bagian Tangki Merah menunjukkan angka 50% (yang nilainya sama dengan setengah atau $\\frac{1}{2}$ bagian). Jika total seluruh air adalah 100 liter, berapakah isi air di Tangki Merah?",
+    options: ["25 liter", "50 liter", "75 liter", "100 liter"],
+    correct: 1,
+    hint: "Ingat, nilai 50% itu sama dengan membagi total air menjadi 2 bagian yang sama besar (setengah).",
+    explanation: "Porsi Tangki Merah adalah $50\\%$, yang setara dengan setengah ($\\frac{1}{2}$) bagian dari total $100$ liter.\n$$100 \\div 2 = 50 \\text{ liter}.$$"
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Apel Hijau', percent: 25, color: 'g-mint'}, {label: 'Apel Merah', percent: 75, color: 'g-coral'} ],
+    showDegrees: false,
+    question: "Diagram lingkaran di atas menunjukkan jenis kargo buah. Porsi Apel Hijau adalah 25% (yang nilainya sama dengan seperempat atau $\\frac{1}{4}$ bagian). Jika total seluruh apel adalah 40 buah, berapakah banyak Apel Hijau?",
+    options: ["10 buah", "20 buah", "30 buah", "40 buah"],
+    correct: 0,
+    hint: "Ingat, nilai 25% itu sama dengan membagi total buah menjadi 4 bagian yang sama besar (seperempat).",
+    explanation: "Porsi Apel Hijau adalah $25\\%$, yang setara dengan seperempat ($\\frac{1}{4}$) bagian dari total $40$ buah.\n$$40 \\div 4 = 10 \\text{ buah}.$$"
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Siang', percent: 50, color: 'g-amber'}, {label: 'Malam', percent: 50, color: 'g-violet'} ],
+    showDegrees: true,
+    question: "Di Planet Kepler, waktu Siang Hari membentuk sudut 180° pada diagram lingkaran (yang nilainya sama dengan setengah atau $\\frac{1}{2}$ putaran lurus). Jika total waktu satu hari di planet tersebut adalah 24 jam, berapakah lama waktu Siang Hari?",
+    options: ["6 jam", "12 jam", "18 jam", "24 jam"],
+    correct: 1,
+    hint: "Sudut lurus 180° membelah lingkaran tepat menjadi dua bagian yang sama besar (setengah).",
+    explanation: "Sudut $180^{\\circ}$ adalah tepat setengah ($\\frac{1}{2}$) dari satu putaran penuh ($360^{\\circ}$). Setengah dari total $24$ jam adalah:\n$$24 \\div 2 = 12 \\text{ jam}.$$"
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Bermain', percent: 25, color: 'g-cyan'}, {label: 'Belajar', percent: 75, color: 'g-violet'} ],
+    showDegrees: true,
+    question: "Robot Cilik membagi waktu energinya. Sektor Bermain membentuk sudut siku-siku 90° pada diagram lingkaran (yang nilainya sama dengan seperempat atau $\\frac{1}{4}$ putaran penuh). Jika total energi harian setara 80 unit baterai, berapa unit baterai yang digunakan untuk Bermain?",
+    options: ["10 unit", "20 unit", "30 unit", "40 unit"],
+    correct: 1,
+    hint: "Sudut siku-siku 90° membagi satu lingkaran utuh menjadi 4 bagian yang sama besar (seperempat).",
+    explanation: "Sudut $90^{\\circ}$ adalah tepat seperempat ($\\frac{1}{4}$) dari satu putaran penuh ($360^{\\circ}$). Seperempat dari total $80$ unit baterai adalah:\n$$80 \\div 4 = 20 \\text{ unit}.$$"
+  },
+  {
+    type: 'pie',
+    segments: [ {label: 'Milik Mars', percent: 50, color: 'g-coral'}, {label: 'Milik Jupiter', percent: 50, color: 'g-cyan'} ],
+    showDegrees: false,
+    question: "Diagram lingkaran menunjukkan kepemilikan stasiun antariksa. Bagian Mars menunjukkan angka 50% (yang nilainya sama dengan setengah atau $\\frac{1}{2}$ bagian). Jika total seluruhnya adalah 60 stasiun, berapa banyak stasiun yang dimiliki oleh Mars?",
+    options: ["15 stasiun", "30 stasiun", "45 stasiun", "60 stasiun"],
+    correct: 1,
+    hint: "Porsi 50% adalah setengah bagian dari keseluruhan stasiun.",
+    explanation: "Porsi Mars adalah $50\\%$, yang setara dengan setengah ($\\frac{1}{2}$) dari total $60$ stasiun.\n$$60 \\div 2 = 30 \\text{ stasiun}.$$"
+  }
+];
+
+// --- APP ENGINE STATES ---
+let userName = "Astronot Cilik";
+let currentQuestionIndex = 0;
+let score = 0;
+let userAnswers = []; // Records user's choice for each question index
+let answered = false;
+
+// --- DOM ELEMENTS ---
+const stage = document.getElementById('stage');
+const topbar = document.getElementById('topbar');
+const progressTrack = document.getElementById('progress-track');
+const progressBar = document.getElementById('progress-bar');
+const progressRocket = document.getElementById('progress-rocket');
+const pageCounter = document.getElementById('page-counter');
+
+// --- APP INIT ---
+window.onload = function() {
+  loadWelcomeScreen();
+};
+
+function loadWelcomeScreen() {
+  topbar.style.display = "none";
+  progressTrack.style.display = "none";
+  
+  stage.innerHTML = `
+    <div class="fade-in" style="text-align:center; padding: 20px 0;">
+      <div class="illus-wrap">
+        <svg width="180" height="150" viewBox="0 0 200 150">
+          <ellipse cx="100" cy="135" rx="75" ry="8" fill="rgba(14,18,54,0.18)"/>
+          <g transform="translate(45, 10)">
+            <ellipse cx="45" cy="45" rx="40" ry="10" fill="none" stroke="#ffb300" stroke-width="3" opacity="0.55" transform="rotate(-18 45 45)"/>
+            <circle cx="45" cy="45" r="26" fill="url(#g-planet)"/>
+            <ellipse cx="36" cy="34" rx="9" ry="5" fill="#ffffff" opacity="0.3"/>
+            <ellipse cx="45" cy="45" rx="40" ry="10" fill="none" stroke="#ffb300" stroke-width="3" opacity="0.85" stroke-dasharray="60 300" transform="rotate(-18 45 45)"/>
+          </g>
+        </svg>
+      </div>
+      <h1 class="page-title" style="font-size:32px;">Ujian Sertifikasi Astronot Data 🚀</h1>
+      <p class="lead" style="max-width:580px; margin: 0 auto 24px;">
+        Siapkan keahlianmu membaca data! Selesaikan <b>30 soal petualangan matematika</b> untuk meraih Lencana Emas dan Sertifikat Ahli Statistika Cilik Angkasa 2.0!
+      </p>
+      
+      <div class="card tinted-cyan" style="max-width:420px; margin:0 auto 24px;">
+        <label style="display:block; font-family:'Baloo 2'; font-weight:800; font-size:16px; margin-bottom:8px; color:var(--navy);">
+          Masukkan Nama Panggilanmu:
+        </label>
+        <input type="text" id="username-input" class="input-field" placeholder="Ketik namamu di sini..." value="Astronot Cilik">
+      </div>
+      
+      <button class="btn btn-primary" id="btn-start">Mulai Ujian Sertifikasi ▶</button>
+    </div>
+    
+    <div class="orbit-say" style="max-width:600px; margin: 24px auto 0;">
+      ${renderOrbit('wave')}
+      <div class="bubble">
+        Hai! Aku <b>ORBIT</b>. Aku akan memandu dan memeriksa setiap jawaban ujianmu. Jangan terburu-buru, perhatikan grafik dengan teliti ya!
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('btn-start').addEventListener('click', function() {
+    const inputVal = document.getElementById('username-input').value.trim();
+    if(inputVal !== "") {
+      userName = inputVal;
+    }
+    playSound('click');
+    startQuiz();
+  });
+}
+
+function startQuiz() {
+  currentQuestionIndex = 0;
+  score = 0;
+  userAnswers = [];
+  answered = false;
+  
+  topbar.style.display = "flex";
+  progressTrack.style.display = "block";
+  
+  loadQuestion(currentQuestionIndex);
+}
+
+function loadQuestion(index) {
+  answered = false;
+  const q = QUESTIONS[index];
+  
+  // Update progress bar & Rocket position
+  const pct = (index / QUESTIONS.length) * 100;
+  progressBar.style.width = pct + "%";
+  progressRocket.style.left = `calc(${pct}% + ${index === 0 ? 8 : (index === QUESTIONS.length-1 ? -8 : 0)}px)`;
+  pageCounter.textContent = `Soal ${index + 1} / ${QUESTIONS.length}`;
+  
+  let chartHtml = '';
+  if (q.type === 'bar') {
+    chartHtml = generateBarChart(q.data, q.max, q.unit);
+  } else if (q.type === 'pic') {
+    chartHtml = generatePictogram(q.data, q.icon, q.unitPerIcon);
+  } else if (q.type === 'pie') {
+    chartHtml = generatePieChart(q.segments, q.showDegrees);
+  }
+  
+  let optionsHtml = q.options.map((opt, oIdx) => `
+    <button class="quiz-option" data-idx="${oIdx}">
+      <span class="letter">${String.fromCharCode(65 + oIdx)}</span>
+      <span>${opt}</span>
+    </button>
+  `).join('');
+  
+  stage.innerHTML = `
+    <div class="fade-in">
+      <div class="card" style="margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span class="tag tag-mid">Kategori: ${getCategoryLabel(q.type)}</span>
+          <span style="font-size:12.5px; font-weight:800; color:var(--ink-soft);">Bobot: 10 Poin</span>
+        </div>
+        <div class="body-text" style="font-size:16px; font-weight:700; line-height:1.6; color:var(--navy);">
+          ${q.question}
+        </div>
+      </div>
+      
+      ${chartHtml}
+      
+      <div class="quiz-options">
+        ${optionsHtml}
+      </div>
+      
+      <div id="feedback-area" style="margin-top:16px;"></div>
+      
+      <div id="nav-row">
+        <button class="btn btn-cyan" id="btn-hint-quiz">💡 Minta Petunjuk</button>
+        <button class="btn btn-primary" id="btn-next-quiz" disabled>Lanjut Soal Berikutnya ▶</button>
+      </div>
+    </div>
+  `;
+  
+  renderMathInElement(stage, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$', right: '$', display: false}
+    ],
+    throwOnError: false
+  });
+  
+  // Event listeners for options
+  const optionButtons = stage.querySelectorAll('.quiz-option');
+  optionButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (answered) return;
+      const selectedIdx = parseInt(this.dataset.idx);
+      handleAnswer(selectedIdx, optionButtons);
+    });
+  });
+  
+  // Hint button
+  document.getElementById('btn-hint-quiz').addEventListener('click', function() {
+    playSound('click');
+    showHint(q.hint);
+  });
+  
+  // Next button
+  const nextBtn = document.getElementById('btn-next-quiz');
+  nextBtn.addEventListener('click', function() {
+    playSound('click');
+    currentQuestionIndex++;
+    if (currentQuestionIndex < QUESTIONS.length) {
+      loadQuestion(currentQuestionIndex);
+    } else {
+      finishQuiz();
+    }
+  });
+}
+
+function getCategoryLabel(type) {
+  if (type === 'bar') return 'Diagram Batang 📊';
+  if (type === 'pic') return 'Piktogram ⭐';
+  if (type === 'pie') return 'Diagram Lingkaran 🍕';
+  return 'Analisis Data 🛸';
+}
+
+function showHint(hintText) {
+  const feedbackArea = document.getElementById('feedback-area');
+  feedbackArea.innerHTML = `
+    <div class="orbit-say" style="border-left-color: var(--amber);">
+      ${renderOrbit('think')}
+      <div class="bubble">
+        <b>Orbit Memberikan Petunjuk:</b><br>${hintText}
+      </div>
+    </div>
+  `;
+}
+
+function handleAnswer(selectedIdx, buttons) {
+  answered = true;
+  userAnswers.push(selectedIdx);
+  const q = QUESTIONS[currentQuestionIndex];
+  const isCorrect = (selectedIdx === q.correct);
+  
+  buttons.forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === q.correct) {
+      btn.classList.add('correct');
+    } else if (idx === selectedIdx) {
+      btn.classList.add('wrong');
+    }
+  });
+  
+  const feedbackArea = document.getElementById('feedback-area');
+  const nextBtn = document.getElementById('btn-next-quiz');
+  nextBtn.disabled = false;
+  
+  if (isCorrect) {
+    score += 10;
+    playSound('correct');
+    feedbackArea.innerHTML = `
+      <div class="orbit-say" style="border-left-color: var(--mint);">
+        ${renderOrbit('happy')}
+        <div class="bubble">
+          <b style="color:var(--mint-dark);">Hebat! Jawabanmu 100% Benar! 🚀</b><br>
+          ${q.explanation}
+        </div>
+      </div>
+    `;
+  } else {
+    playSound('wrong');
+    feedbackArea.innerHTML = `
+      <div class="orbit-say" style="border-left-color: var(--coral);">
+        ${renderOrbit('point')}
+        <div class="bubble">
+          <b style="color:var(--coral-dark);">Kurang tepat, tapi jangan patah semangat!</b><br>
+          Jawaban yang benar adalah opsi <b>${String.fromCharCode(65 + q.correct)}</b>.<br><br>
+          <b>Pembahasan:</b> ${q.explanation}
+        </div>
+      </div>
+    `;
+  }
+  
+  renderMathInElement(feedbackArea, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$', right: '$', display: false}
+    ],
+    throwOnError: false
+  });
+  
+  // Auto-scroll to feedback smoothly
+  setTimeout(() => {
+    feedbackArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+function finishQuiz() {
+  playSound('cheer');
+  
+  // Hide topbar during result screen
+  topbar.style.display = "none";
+  progressTrack.style.display = "none";
+  
+  const totalQuestions = QUESTIONS.length;
+  const maxScore = totalQuestions * 10;
+  const percentage = Math.round((score / maxScore) * 100);
+  
+  let medalTitle = "Astronot Data Pemula 🛰️";
+  let medalColor = "#78909c"; // Silver-ish
+  let lencanaClass = "g-violet";
+  let lencanaStars = 1;
+  
+  if (percentage >= 90) {
+    medalTitle = "Astronot Data Utama (Emas) 🏆";
+    medalColor = "url(#g-amber)";
+    lencanaClass = "g-amber";
+    lencanaStars = 3;
+  } else if (percentage >= 70) {
+    medalTitle = "Astronot Data Madya (Perak) 🥈";
+    medalColor = "url(#g-cyan)";
+    lencanaClass = "g-cyan";
+    lencanaStars = 2;
+  }
+  
+  stage.innerHTML = `
+    <div class="fade-in">
+      <h1 class="page-title">Misi Sertifikasi Selesai! 🎉</h1>
+      <p class="lead" style="max-width:600px; margin: 0 auto 24px;">
+        Selamat <b>${userName}</b>! Kamu telah berhasil menempuh seluruh 30 soal ujian dengan tangguh. Berikut adalah laporan pencapaian data luar angkasamu!
+      </p>
+      
+      <div class="summary-grid">
+        <!-- Badge SVG Section -->
+        <div class="card badge-holder" style="padding: 30px 10px;">
+          <svg viewBox="0 0 100 100" width="100%">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="url(#g-amber)" stroke-width="3" stroke-dasharray="2,2"/>
+            <circle cx="50" cy="50" r="40" fill="${medalColor === 'url(#g-amber)' ? 'url(#g-amber)' : (medalColor === 'url(#g-cyan)' ? 'url(#g-cyan)' : '#cfd8dc')}" />
+            <!-- Star inside badge -->
+            <path d="M50 20 L58 38 L78 40 L62 53 L67 73 L50 62 L33 73 L38 53 L22 40 L42 38 Z" fill="#fff" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
+            <text x="50" y="92" text-anchor="middle" font-family="Baloo 2" font-size="7" font-weight="800" fill="#0e1236">SERTIFIKAT STATISTIKA</text>
+          </svg>
+          <div style="font-family:'Baloo 2'; font-weight:800; font-size:18px; margin-top:12px; color:var(--navy);">
+            ${medalTitle}
+          </div>
+        </div>
+        
+        <!-- Score Card Section -->
+        <div class="card" style="padding: 22px;">
+          <h2 class="sub" style="margin-top:0;">Statistik Kelulusan</h2>
+          <div style="font-size:15px; line-height:2; color:var(--ink);">
+            • Nama Kadet: <b>${userName}</b><br>
+            • Total Skor: <b style="font-size:17px; color:var(--coral-dark);">${score} / ${maxScore} Poin</b><br>
+            • Akurasi: <b>${percentage}%</b><br>
+            • Predikat: <b>${percentage >= 70 ? 'LULUS (Sangat Baik) ✅' : 'Butuh Belajar Lagi ❌'}</b>
+          </div>
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-mint" id="btn-show-cert">Lencana Sertifikat 🏅</button>
+            <button class="btn btn-cyan" id="btn-review">Tinjau Soal & Pembahasan 📑</button>
+          </div>
+        </div>
+      </div>
+      
+      <div id="dynamic-result-area" style="margin-top:20px;"></div>
+      
+      <div style="text-align:center; margin-top:30px;">
+        <button class="btn btn-primary" onclick="window.location.reload()">🔁 Ulangi Ujian Kuis</button>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('btn-show-cert').addEventListener('click', function() {
+    playSound('click');
+    showCertificate(medalTitle, percentage);
+  });
+  
+  document.getElementById('btn-review').addEventListener('click', function() {
+    playSound('click');
+    showReviewList();
+  });
+  
+  // Default show certificate
+  showCertificate(medalTitle, percentage);
+}
+
+function showCertificate(title, pct) {
+  const area = document.getElementById('dynamic-result-area');
+  const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+  
+  area.innerHTML = `
+    <div id="cert-card" class="fade-in">
+      <h2>Sertifikat Ahli Statistika Cilik Angkasa</h2>
+      <div style="font-size:14px; letter-spacing:0.05em; color:#716035;">DIBERIKAN KEPADA:</div>
+      <div class="name">${userName}</div>
+      <div class="award">Atas keberhasilannya menyelesaikan tantangan ujian komparasi data tingkat lanjut mencakup analisis komprehensif Diagram Batang Skala Lompat, Piktogram, dan kalkulasi proporsi juring persen & derajat pada Diagram Lingkaran.</div>
+      
+      <div style="display:flex; justify-content:space-around; align-items:center; margin-top:25px;">
+        <div style="text-align:left; font-size:13px; color:#555;">
+          <strong>Predikat:</strong> ${title}<br>
+          <strong>Tanggal:</strong> ${dateStr}
+        </div>
+        <div style="text-align:right; font-size:13px; color:#555;">
+          <strong>Skor Akurasi:</strong> ${pct}%<br>
+          <strong>Verifikasi:</strong> ORBIT Robot Pendamping 🤖
+        </div>
+      </div>
+      <div class="score">🎖️ Terakreditasi Stasiun Antariksa Utama 🎖️</div>
+    </div>
+  `;
+}
+
+function showReviewList() {
+  const area = document.getElementById('dynamic-result-area');
+  
+  let reviewItemsHtml = QUESTIONS.map((q, idx) => {
+    const userSelected = userAnswers[idx];
+    const isCorrect = (userSelected === q.correct);
+    
+    return `
+      <div class="review-item">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <strong style="color:var(--navy);">Soal Nomor ${idx + 1}</strong>
+          <span style="font-size:13px; font-weight:800; color:${isCorrect ? 'var(--mint)' : 'var(--coral)'};">
+            ${isCorrect ? 'Benar ✅' : 'Salah ❌'}
+          </span>
+        </div>
+        <p style="margin: 0 0 10px; font-size:14.5px; color:#333;">${q.question}</p>
+        <div style="font-size:13.5px; margin-bottom:8px; line-height:1.6;">
+          • Jawabanmu: <span style="color:${isCorrect ? 'var(--mint-dark)' : 'var(--coral-dark)'}; font-weight:700;">
+            ${q.options[userSelected] || 'Tidak Menjawab'}
+          </span><br>
+          • Jawaban Benar: <span style="color:var(--mint-dark); font-weight:700;">${q.options[q.correct]}</span>
+        </div>
+        <div class="card tinted-cyan" style="padding:10px 14px; margin: 6px 0 0; font-size:13px;">
+          <strong>Pembahasan:</strong> ${q.explanation}
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  area.innerHTML = `
+    <div class="card fade-in" style="background:#fff; max-height: 500px; overflow-y: auto;">
+      <h3 style="font-family:'Baloo 2'; color:var(--navy); margin-top:0; border-bottom:2px solid #e2e8f0; padding-bottom:8px;">Tinjau Lembar Jawaban Ujian</h3>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        ${reviewItemsHtml}
+      </div>
+    </div>
+  `;
+  
+  renderMathInElement(area, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$', right: '$', display: false}
+    ],
+    throwOnError: false
+  });
+}
+</script>
+</body>
+</html>
